@@ -5,7 +5,7 @@ export default function MovieList({ movies, isLoading }) {
   if(isLoading) {
     return <p>Loading movies...</p>
   }
-  if (!movies.length) {
+  if (movies.length === 0) {
     return <p>No movies found</p>; // Відображаємо повідомлення, якщо немає фільмів
   }
 
