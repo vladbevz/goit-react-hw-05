@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import { useSearchParams, } from 'react-router-dom';
 import axios from 'axios';
 import MovieList from '../components/MovieList/MovieList';
@@ -59,7 +59,11 @@ export default function MoviesPage() {
         />
         <button type="submit">Search</button>
       </form>
-      <MovieList movies={movies} isLoading={isLoading}/> 
-    </div>
+      
+      {isLoading && <p>Loading...</p>}
+      {!isLoading && query && movies.length === 0 && <p>No movies found</p>}
+      {!isLoading && movies.length > 0 && <MovieList movies={movies} />}
+      
+    </div> 
   );
 };

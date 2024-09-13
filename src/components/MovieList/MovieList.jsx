@@ -1,13 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-export default function MovieList({ movies, isLoading }) {
-  if(isLoading) {
-    return <p>Loading movies...</p>
-  }
-  if (movies.length === 0) {
-    return <p>No movies found</p>; 
-  }
+export default function MovieList({ movies}) {
+  // if(isLoading) {
+  //   return <p>Loading movies...</p>
+  // }
+  // if (isLoading && !movies.length) {
+  //   return <p>No movies found</p>; 
+  // }
 
   return (
     <ul>
