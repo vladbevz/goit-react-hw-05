@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { Link, useLocation  } from 'react-router-dom';
 import axios from 'axios';
 
 export default function  HomePage() {
   const [movies, setMovies] = useState([]);
+  const location = useLocation();
 
   useEffect(() => {
     const fetchTrendingMovies = async () => {
@@ -26,7 +28,10 @@ export default function  HomePage() {
       <h1>Trending today</h1>
       <ul>
         {movies.map(movie => (
-          <li key={movie.id}>{movie.title}</li>
+        //   <li key={movie.id}>{movie.title}</li>
+            <li key={movie.id}>
+            <Link to={`/movies/${movie.id}`} state={{ from: location }}>{movie.title} </Link>
+      </li>
         ))}
       </ul>
     </div>

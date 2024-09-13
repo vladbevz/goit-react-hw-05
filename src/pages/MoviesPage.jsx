@@ -1,44 +1,65 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams, } from 'react-router-dom';
 import axios from 'axios';
 import MovieList from '../components/MovieList/MovieList';
 
-const MoviesPage = () => {
-  const [query, setQuery] = useState('');
+export default function MoviesPage() {
   const [movies, setMovies] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const query = searchParams.get('query') || '';
+  
+  
 
-  const handleSearch = async (e) => {
+  const handleSearch = (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.get(
-        `https://api.themoviedb.org/3/search/movie?query=${query}&language=en-US&page=1`,
-        {
-          headers: {
-            Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmYThhMWI2ZDA4MzZmYWJhNTc3YjdiNzkwZDI3NzgyZCIsIm5iZiI6MTcyNjE2Mjk3NC4zNzM4OTIsInN1YiI6IjY2ZTMyNjkwMjgwNDhkOTJkZWY5MTQzMSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.5oNYe0IhjKjxs5uBTXuhgWhxS_1Fq-QvM-cFBdmQSmc', // встав свій токен доступу
-          },
-        }
-      );
-      console.log(response.data.results); 
-      setMovies(response.data.results);
-    } catch (error) {
-      console.error('Error fetching movies:', error);
+    const form = e.target;
+    const searchQuery = form.elements.query.value.trim();
+    if(searchQuery){
+      setSearchParams({ query: searchQuery });
+    } else {
+      setSearchParams({});
     }
+    
   };
+
+  useEffect(() => {
+    if (query === '') return;
+
+    const searchMovies = async () => {
+      setIsLoading(true);
+      try {
+        const response = await axios.get(`https://api.themoviedb.org/3/search/movie?query=${query}`, {
+          headers: {
+            Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmYThhMWI2ZDA4MzZmYWJhNTc3YjdiNzkwZDI3NzgyZCIsIm5iZiI6MTcyNjE2Mjk3NC4zNzM4OTIsInN1YiI6IjY2ZTMyNjkwMjgwNDhkOTJkZWY5MTQzMSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.5oNYe0IhjKjxs5uBTXuhgWhxS_1Fq-QvM-cFBdmQSmc'
+          }
+        });
+        setMovies(response.data.results);
+      } catch (error) {
+        console.error('Error searching movies:', error);
+      } finally {
+        setIsLoading(false); 
+      }
+    };
+
+    searchMovies();
+  }, [query]);
+ 
+
 
   return (
     <div>
       <h1>Search for a movie</h1>
       <form onSubmit={handleSearch}>
         <input
+        name="query"
           type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          defaultValue={query}
           placeholder="Enter movie title"
         />
         <button type="submit">Search</button>
       </form>
-      <MovieList movies={movies} /> {/* Відображаємо результати пошуку */}
+      <MovieList movies={movies} isLoading={isLoading}/> 
     </div>
   );
 };
-
-export default MoviesPage;
