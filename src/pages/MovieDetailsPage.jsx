@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
@@ -7,7 +7,7 @@ export default function MovieDetailsPage() {
   const [movie, setMovie] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
-
+  const prevLocation = useRef(location.state?.from || '/movies'); 
   useEffect(() => {
     const fetchMovieDetails = async () => {
       try {
@@ -28,27 +28,22 @@ export default function MovieDetailsPage() {
   if (!movie) {
     return <div>Loading...</div>;
   }
+
   const handleGoBack = () => {
-    if (location.state && location.state.from) {
-      navigate(location.state.from);
-    } else {
-      navigate('/movies'); 
-    }
+    navigate(prevLocation.current);
   };
 
   return (
     <div>
-       <button onClick={handleGoBack}> &larr; Go Back</button>
+      <button onClick={handleGoBack}>&larr; Go Back</button>
       <h1>{movie.title}</h1>
       <p>{movie.overview}</p>
-      <img src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt={movie.title} width="200"/>
+      <img src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt={movie.title} width="200" />
       <ul>
-        <li><Link to='cast'>Cast</Link></li>
-        <li><Link to='reviews'>Reviews</Link></li>
+        <li><Link to="cast">Cast</Link></li>
+        <li><Link to="reviews">Reviews</Link></li>
       </ul>
-      <Outlet/>
+      <Outlet />
     </div>
   );
-};
-
-
+}

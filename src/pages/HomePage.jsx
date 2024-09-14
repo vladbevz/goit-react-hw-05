@@ -1,10 +1,9 @@
-import  { useState, useEffect } from 'react';
-import { Link, useLocation  } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import MovieList from '../components/MovieList/MovieList';
 
-export default function  HomePage() {
+export default function HomePage() {
   const [movies, setMovies] = useState([]);
-  const location = useLocation();
 
   useEffect(() => {
     const fetchTrendingMovies = async () => {
@@ -26,14 +25,7 @@ export default function  HomePage() {
   return (
     <div>
       <h1>Trending today</h1>
-      <ul>
-        {movies.map(movie => (
-        //   <li key={movie.id}>{movie.title}</li>
-            <li key={movie.id}>
-            <Link to={`/movies/${movie.id}`} state={{ from: location }}>{movie.title} </Link>
-      </li>
-        ))}
-      </ul>
+      <MovieList movies={movies} />
     </div>
   );
-};
+}
